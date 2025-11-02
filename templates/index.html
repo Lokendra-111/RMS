@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RMS Dashboard</title>
+  <link rel="stylesheet" href="../static/style2.css" />
+</head>
+<body>
+  <div class="main-layout">
+    <aside class="sidebar">
+      <h2>🍽️ RMS</h2>
+      <nav>
+        <a href="{{ url_for('dashboard') }}" class="nav-item">🏠 Home</a>
+        <a href="#" class="nav-item">📊 Reports</a>
+        <a href="{{ url_for('generate_account') }}" class="nav-item">👥 Create Account</a>
+        <!-- Logout -->
+        <a href="{{ url_for('logout') }}" class="nav-item logout">📕 Logout</a>
+      </nav>
+    </aside>
+
+    <section class="dashboard">
+      <header>
+        <h1>Welcome {{ username }}</h1>
+        <p style="color: black;"><b>Select an action below to begin.</b></p>
+      </header>
+
+      <div class="card-grid">
+        <div class="card" onclick='window.location.href="{{ url_for("view_menu") }}"'>📋<span>View Menu</span></div>
+        <div class="card" onclick='window.location.href="{{ url_for("view_orders") }}"'>👀<span>View Orders</span></div>
+        <div class="card" onclick='window.location.href="{{ url_for("generate_bill") }}"'>💵<span>Generate Bill</span></div>
+        <div class="card" onclick="alert('Manage Menu')">🍽️<span>Manage Menu</span></div>
+        <div class="card" onclick='window.location.href="{{ url_for("table_status") }}"'>📶<span>Table Status</span></div>
+        <div class="card" onclick="alert('Reports')">📊<span>Reports</span></div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
+

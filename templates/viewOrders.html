@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>View Order</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+    <a href="{{ url_for('dashboard') }}" class="inline-block mb-4 text-blue-600 hover:underline text-xl font-medium">
+        ⬅️ Back to Order Page
+    </a>
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
+        <h1 class="text-3xl font-bold mb-6 text-center">🧾 Your Last Order</h1>
+        <div id="orderDetails" class="space-y-4"></div>
+    </div>
+
+    <script>
+        function renderOrderDetails() {
+            const orderDiv = document.getElementById("orderDetails");
+            const orderData = localStorage.getItem("latestOrder");
+
+            if (!orderData) {
+                orderDiv.innerHTML = "<p class='text-center text-gray-600'>No order found. Please place an order first.</p>";
+                return;
+            }
+
+            const order = JSON.parse(orderData);
+
+            // Show timestamp
+            const date = new Date(order.timestamp);
+            const timeString = date.toLocaleString();
+
+            let html = `<p class="text-gray-500 mb-4">Order placed on: <strong>${timeString}</strong></p>`;
+            html += `<table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-gray-300">
+                                <th class="py-2">Item</th>
+                                <th class="py-2">Quantity</th>
+                                <th class="py-2">Price</th>
+                                <th class="py-2">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
+            order.items.forEach(item => {
+                html += `
+                    <tr class="border-b border-gray-200">
+                        <td class="py-2">${item.name}</td>
+                        <td class="py-2">${item.quantity}</td>
+                        <td class="py-2">Rs.${Number(item.price).toFixed(2)}</td>
+                        <td class="py-2">Rs.${Number(item.total).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            html += `<p class="mt-4 text-right font-bold text-xl">Total: Rs.${Number(order.total).toFixed(2)}</p>`;
+
+            orderDiv.innerHTML = html;
+        }
+
+        renderOrderDetails();
+    </script>
+</body>
+</html>

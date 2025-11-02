@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Restaurant Bill</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans p-6">
+  <!-- Back Button -->
+  <a href="{{ url_for('dashboard') }}" class="inline-block mb-4 text-blue-600 hover:underline text-xl font-medium">
+    ⬅️ Back
+  </a>
+
+  <div class="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6">
+    <h1 class="text-2xl font-bold text-center mb-4">🍽️ Restaurant Bill System</h1>
+
+    <!-- Input Form -->
+    <div class="grid gap-4 sm:grid-cols-3 mb-4">
+      <input id="name" type="text" placeholder="Item Name" class="border p-2 rounded" />
+      <input id="price" type="number" placeholder="Price" class="border p-2 rounded" />
+      <input id="quantity" type="number" placeholder="Quantity" class="border p-2 rounded" />
+    </div>
+    <div class="flex justify-between mb-6">
+      <button onclick="addItem()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">Add Item</button>
+      <button onclick="removeItem()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">Remove Item</button>
+    </div>
+
+    <!-- Bill Display -->
+    <div id="bill" class="text-gray-800 space-y-2"></div>
+
+    <!-- Totals -->
+    <div class="mt-6 border-t pt-4 text-right">
+      <p>Subtotal: $<span id="subtotal">0.00</span></p>
+      <p>Tax (13%): $<span id="tax">0.00</span></p>
+      <p class="font-bold text-lg">Total: $<span id="total">0.00</span></p>
+    </div>
+  </div>
+
+  <script>
+    class RestaurantBill {
+      constructor() {
+        this.items = {};
+        this.taxRate = 0.13;
+      }
+
+      addItem(name, price, quantity) {
+        this.items[name] = { price, quantity };
+      }
+
+      removeItem(name) {
+        if (this.items[name]) {
+          delete this.items[name];
+        } else {
+          alert(`Item '${name}' not found!`);
+        }
+      }
+
+      calculateSubtotal() {
+        return Object.values(this.items).reduce((sum, item) => sum + item.price * item.quantity, 0);
+      }
+
+      calculateTax() {
+        return this.calculateSubtotal() * this.taxRate;
+      }
+
+      calculateTotal() {
+        return this.calculateSubtotal() + this.calculateTax();
+      }
+
+      generateBillHTML() {
+        let output = '';
+        for (const [name, item] of Object.entries(this.items)) {
+          output += `<p>${name}: ${item.quantity} x $${item.price.toFixed(2)} = $${(item.quantity * item.price).toFixed(2)}</p>`;
+        }
+        return output;
+      }
+    }
+
+    const bill = new RestaurantBill();
+
+    function updateBillDisplay() {
+      document.getElementById('bill').innerHTML = bill.generateBillHTML();
+      document.getElementById('subtotal').textContent = bill.calculateSubtotal().toFixed(2);
+      document.getElementById('tax').textContent = bill.calculateTax().toFixed(2);
+      document.getElementById('total').textContent = bill.calculateTotal().toFixed(2);
+    }
+
+    function addItem() {
+      const name = document.getElementById('name').value.trim();
+      const price = parseFloat(document.getElementById('price').value);
+      const quantity = parseInt(document.getElementById('quantity').value);
+
+      if (!name || isNaN(price) || isNaN(quantity) || price <= 0 || quantity <= 0) {
+        alert("Please enter valid name, price, and quantity.");
+        return;
+      }
+
+      bill.addItem(name, price, quantity);
+      updateBillDisplay();
+
+      document.getElementById('name').value = '';
+      document.getElementById('price').value = '';
+      document.getElementById('quantity').value = '';
+    }
+
+    function removeItem() {
+      const name = document.getElementById('name').value.trim();
+      if (!name) {
+        alert("Enter the item name to remove.");
+        return;
+      }
+
+      bill.removeItem(name);
+      updateBillDisplay();
+
+      document.getElementById('name').value = '';
+    }
+  </script>
+</body>
+</html>

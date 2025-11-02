@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Table Status</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f1f1f1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(5, 150px);
+      gap: 30px;
+      margin-top: 50px;
+    }
+
+    .box {
+      height: 150px;  
+      color: white;
+      font-size: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
+    }
+
+    .box.free {
+      background-color: green;
+    }
+
+    .box.occupied {
+      background-color: red;
+    }
+
+    .title {
+      font-size: 38px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .back-button {
+      margin-top: 20px;
+      font-size: 18px;
+      color: blue;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="title">Table Status</div>
+  <!-- Back Button -->
+  <div class="back-button" style="align-self: flex-start; margin-bottom: 20px;" onclick="window.location.href='{{ url_for('dashboard') }}'">
+    ⬅️ Back
+  </div>
+
+  <div class="grid-container" id="grid">
+    {% for table in tables %}
+      <div class="box {{ table.status }}" data-table="{{ table.number }}">
+        {{ table.number }}
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    const boxes = document.querySelectorAll('.box');
+
+    boxes.forEach(box => {
+      box.addEventListener('click', async () => {
+        const tableNumber = box.dataset.table;
+        if (box.classList.contains('occupied')) {
+          // Free the table if occupied
+          const res = await fetch(`/freeTable/${tableNumber}`, { method: 'POST' });
+          const data = await res.json();
+          if (data.success) {
+            box.classList.remove('occupied');
+            box.classList.add('free');
+          }
+        } else {
+          // Reserve the table if free
+          const res = await fetch(`/reserveTable/${tableNumber}`, { method: 'POST' });
+          const data = await res.json();
+          if (data.success) {
+            box.classList.remove('free');
+            box.classList.add('occupied');
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
