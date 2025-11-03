@@ -1,121 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Restaurant Bill</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <title>Generate Bill</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 font-sans p-6">
-  <!-- Back Button -->
-  <a href="{{ url_for('dashboard') }}" class="inline-block mb-4 text-blue-600 hover:underline text-xl font-medium">
-    ⬅️ Back
-  </a>
+<body class="bg-gray-100 min-h-screen p-6">
+    <!-- Back button -->
+    <a href="{{ url_for('dashboard') }}" class="inline-block mb-4 text-blue-600 hover:underline text-xl font-medium">
+        ⬅️ Back to Dashboard
+    </a>
 
-  <div class="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6">
-    <h1 class="text-2xl font-bold text-center mb-4">🍽️ Restaurant Bill System</h1>
+    <div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
+        <h1 class="text-3xl font-bold mb-2 text-center">🍴 My Restaurant</h1>
+        <h2 class="text-xl text-gray-600 mb-6 text-center">🧾 Bill / Receipt</h2>
 
-    <!-- Input Form -->
-    <div class="grid gap-4 sm:grid-cols-3 mb-4">
-      <input id="name" type="text" placeholder="Item Name" class="border p-2 rounded" />
-      <input id="price" type="number" placeholder="Price" class="border p-2 rounded" />
-      <input id="quantity" type="number" placeholder="Quantity" class="border p-2 rounded" />
+        <!-- Table number input -->
+        <div class="mb-6 text-center">
+            <label for="tableNumber" class="mr-2 font-medium text-gray-700">Enter Table Number:</label>
+            <input type="number" id="tableNumber" min="1" placeholder="Table #" class="border rounded px-3 py-1 w-24">
+            <button onclick="updateBill()" class="ml-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded">
+                Update Bill
+            </button>
+        </div>
+
+        <!-- Bill container -->
+        <div id="billContainer" class="space-y-4"></div>
+
+        <!-- Print button -->
+        <div class="mt-6 text-center">
+            <button onclick="window.print()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded shadow">
+                🖨️ Print Bill
+            </button>
+        </div>
     </div>
-    <div class="flex justify-between mb-6">
-      <button onclick="addItem()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">Add Item</button>
-      <button onclick="removeItem()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">Remove Item</button>
-    </div>
 
-    <!-- Bill Display -->
-    <div id="bill" class="text-gray-800 space-y-2"></div>
+    <script>
+        // Fetch latest order from localStorage
+        const orderData = localStorage.getItem("latestOrder");
+        let order = orderData ? JSON.parse(orderData) : null;
 
-    <!-- Totals -->
-    <div class="mt-6 border-t pt-4 text-right">
-      <p>Subtotal: $<span id="subtotal">0.00</span></p>
-      <p>Tax (13%): $<span id="tax">0.00</span></p>
-      <p class="font-bold text-lg">Total: $<span id="total">0.00</span></p>
-    </div>
-  </div>
+        function renderBill(tableNumber = '') {
+            const container = document.getElementById("billContainer");
 
-  <script>
-    class RestaurantBill {
-      constructor() {
-        this.items = {};
-        this.taxRate = 0.13;
-      }
+            if (!order) {
+                container.innerHTML = "<p class='text-center text-gray-600'>No order found. Please place an order first.</p>";
+                return;
+            }
 
-      addItem(name, price, quantity) {
-        this.items[name] = { price, quantity };
-      }
+            const date = new Date(order.time || new Date());
+            const timeString = date.toLocaleString();
 
-      removeItem(name) {
-        if (this.items[name]) {
-          delete this.items[name];
-        } else {
-          alert(`Item '${name}' not found!`);
+            let html = `<p class="text-gray-500 mb-2 text-center">Order placed on: <strong>${timeString}</strong></p>`;
+            if (tableNumber) {
+                html += `<p class="text-gray-700 mb-4 text-center font-semibold">Table Number: ${tableNumber}</p>`;
+            }
+
+            html += `<table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-gray-300">
+                                <th class="py-2">Item</th>
+                                <th class="py-2">Qty</th>
+                                <th class="py-2">Price</th>
+                                <th class="py-2">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
+            order.items.forEach(item => {
+                const qty = item.qty || item.quantity || 1;
+                const total = item.price * qty;
+                html += `
+                    <tr class="border-b border-gray-200">
+                        <td class="py-2">${item.name}</td>
+                        <td class="py-2">${qty}</td>
+                        <td class="py-2">Rs.${Number(item.price).toFixed(2)}</td>
+                        <td class="py-2">Rs.${Number(total).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            html += `<p class="mt-4 text-right font-bold text-xl">Grand Total: Rs.${Number(order.total).toFixed(2)}</p>`;
+            html += `<p class="mt-6 text-center text-gray-600">Thank you for dining with 🍴 My Restaurant!</p>`;
+
+            container.innerHTML = html;
         }
-      }
 
-      calculateSubtotal() {
-        return Object.values(this.items).reduce((sum, item) => sum + item.price * item.quantity, 0);
-      }
+        // Initial render
+        renderBill();
 
-      calculateTax() {
-        return this.calculateSubtotal() * this.taxRate;
-      }
-
-      calculateTotal() {
-        return this.calculateSubtotal() + this.calculateTax();
-      }
-
-      generateBillHTML() {
-        let output = '';
-        for (const [name, item] of Object.entries(this.items)) {
-          output += `<p>${name}: ${item.quantity} x $${item.price.toFixed(2)} = $${(item.quantity * item.price).toFixed(2)}</p>`;
+        // Update bill when table number is entered
+        function updateBill() {
+            const tableNumber = document.getElementById("tableNumber").value;
+            renderBill(tableNumber);
         }
-        return output;
-      }
-    }
-
-    const bill = new RestaurantBill();
-
-    function updateBillDisplay() {
-      document.getElementById('bill').innerHTML = bill.generateBillHTML();
-      document.getElementById('subtotal').textContent = bill.calculateSubtotal().toFixed(2);
-      document.getElementById('tax').textContent = bill.calculateTax().toFixed(2);
-      document.getElementById('total').textContent = bill.calculateTotal().toFixed(2);
-    }
-
-    function addItem() {
-      const name = document.getElementById('name').value.trim();
-      const price = parseFloat(document.getElementById('price').value);
-      const quantity = parseInt(document.getElementById('quantity').value);
-
-      if (!name || isNaN(price) || isNaN(quantity) || price <= 0 || quantity <= 0) {
-        alert("Please enter valid name, price, and quantity.");
-        return;
-      }
-
-      bill.addItem(name, price, quantity);
-      updateBillDisplay();
-
-      document.getElementById('name').value = '';
-      document.getElementById('price').value = '';
-      document.getElementById('quantity').value = '';
-    }
-
-    function removeItem() {
-      const name = document.getElementById('name').value.trim();
-      if (!name) {
-        alert("Enter the item name to remove.");
-        return;
-      }
-
-      bill.removeItem(name);
-      updateBillDisplay();
-
-      document.getElementById('name').value = '';
-    }
-  </script>
+    </script>
 </body>
 </html>

@@ -26,11 +26,16 @@
 
             const order = JSON.parse(orderData);
 
-            // Show timestamp
-            const date = new Date(order.timestamp);
-            const timeString = date.toLocaleString();
+            // Display table number
+            const tableNumber = order.tableNumber || "N/A";
 
-            let html = `<p class="text-gray-500 mb-4">Order placed on: <strong>${timeString}</strong></p>`;
+            // Use correct property for timestamp
+            const date = new Date(order.timestamp || order.time);
+            const timeString = isNaN(date) ? "Invalid Date" : date.toLocaleString();
+
+            let html = `<p class="text-gray-500 mb-2">Table Number: <strong>${tableNumber}</strong></p>`;
+            html += `<p class="text-gray-500 mb-4">Order placed on: <strong>${timeString}</strong></p>`;
+            
             html += `<table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="border-b border-gray-300">
@@ -43,12 +48,14 @@
                         <tbody>`;
 
             order.items.forEach(item => {
+                const qty = item.qty || 1;
+                const total = item.price * qty;
                 html += `
                     <tr class="border-b border-gray-200">
                         <td class="py-2">${item.name}</td>
-                        <td class="py-2">${item.quantity}</td>
+                        <td class="py-2">${qty}</td>
                         <td class="py-2">Rs.${Number(item.price).toFixed(2)}</td>
-                        <td class="py-2">Rs.${Number(item.total).toFixed(2)}</td>
+                        <td class="py-2">Rs.${Number(total).toFixed(2)}</td>
                     </tr>
                 `;
             });
