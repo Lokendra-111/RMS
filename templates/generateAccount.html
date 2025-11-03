@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Create Account</title>
+  <title>Create Account | RMS</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -19,12 +19,13 @@
       padding: 40px;
       border-radius: 12px;
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-      width: 320px;
+      width: 340px;
       text-align: center;
     }
 
     h2 {
       margin-bottom: 20px;
+      color: #333;
     }
 
     input[type="text"],
@@ -52,18 +53,52 @@
     button:hover {
       background-color: #6c4611;
     }
+
+    .login-link {
+      display: block;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #007BFF;
+      text-decoration: none;
+    }
+
+    .login-link:hover {
+      text-decoration: underline;
+    }
+
+    .flash {
+      background-color: #ffefc6;
+      border: 1px solid #ffd36f;
+      color: #4a3b00;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
   <div class="form-container">
     <h2>Create Account</h2>
-    <form>
-      <input type="text" placeholder="Full Name" required>
-      <input type="text" placeholder="Username" required>
-      <input type="password" placeholder="Password" required>
-      <input type="password" placeholder="Confirm Password" required>
+
+    <!-- Flask flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Registration Form -->
+    <form action="{{ url_for('signup') }}" method="POST">
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <input type="password" name="confirm" placeholder="Confirm Password" required>
       <button type="submit">Register</button>
     </form>
+
+    <a href="{{ url_for('home') }}" class="login-link">Already have an account? Login here</a>
   </div>
 </body>
 </html>
