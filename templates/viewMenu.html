@@ -35,45 +35,7 @@
     </div>
 
     <!-- Menu Grid -->
-    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6" id="menu">
-      <!-- ALL YOUR FOOD ITEMS REMAIN THE SAME -->
-      <div class="bg-white p-4 rounded shadow cursor-pointer hover:shadow-lg transition"
-           data-category="starters" data-name="Tomato Soup" data-price="450">
-        <img src="../static/images/Creamy-Vegan-Tomato-Soup.jpg" class="rounded mb-3 w-full h-60 object-contain" />
-        <h2 class="text-xl font-semibold">Tomato Soup</h2>
-        <p class="text-gray-600 text-sm">Fresh tomatoes, herbs, and cream</p>
-        <div class="flex justify-between items-center mt-2">
-          <span class="text-green-600 font-bold">Rs 450</span>
-          <button class="bg-blue-600 text-white px-3 py-1 rounded text-sm add-btn">Add</button>
-        </div>
-      </div>
-
-      <div class="bg-white p-4 rounded shadow hover:shadow-lg transition"
-           data-category="starters" data-name="Chicken Momo" data-price="180">
-        <img src="../static/images/momo.jpg" class="rounded mb-3 w-full h-60 object-contain"/>
-        <h2 class="text-xl font-semibold">Chicken Momo</h2>
-        <p class="text-gray-600 text-sm">Steamed dumplings with spicy sauce</p>
-        <div class="flex justify-between items-center mt-2">
-          <span class="text-green-600 font-bold">Rs 180</span>
-          <button class="bg-blue-600 text-white px-3 py-1 rounded text-sm add-btn">Add</button>
-        </div>
-      </div>
-
-      <!-- … all other items remain exactly the same … -->
-
-      <!-- Drinks examples -->
-      <div class="bg-white p-4 rounded shadow hover:shadow-lg transition"
-           data-category="drinks" data-name="Coca-Cola" data-price="100">
-        <img src="../static/images/cocacola.jpg" class="rounded mb-3 w-full h-60 object-contain"/>
-        <h2 class="text-xl font-semibold">Coca-Cola</h2>
-        <p class="text-gray-600 text-sm">Chilled refreshing soft drink</p>
-        <div class="flex justify-between items-center mt-2">
-          <span class="text-green-600 font-bold">Rs 100</span>
-          <button class="bg-blue-600 text-white px-3 py-1 rounded text-sm add-btn">Add</button>
-        </div>
-      </div>
-
-    </div>
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6" id="menu"></div>
   </div>
 
   <!-- 🛒 Floating Cart Drawer -->
@@ -103,19 +65,50 @@
 
   <!-- JavaScript -->
   <script>
+    // Load menu dynamically from localStorage
+    const storedMenu = JSON.parse(localStorage.getItem("restaurantMenu")) || [];
+    const menuContainer = document.getElementById("menu");
+
+    if (storedMenu.length === 0) {
+      menuContainer.innerHTML = `
+        <p class="col-span-full text-center text-gray-500 text-lg">
+          No menu items found. Please add items from Manage Menu.
+        </p>`;
+    } else {
+      storedMenu.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "bg-white p-4 rounded shadow cursor-pointer hover:shadow-lg transition";
+        card.setAttribute("data-category", item.category);
+        card.setAttribute("data-name", item.name);
+        card.setAttribute("data-price", item.price);
+
+        card.innerHTML = `
+          <img src="${item.image || '../static/images/noimage.png'}" 
+               class="rounded mb-3 w-full h-60 object-cover" />
+          <h2 class="text-xl font-semibold">${item.name}</h2>
+          <p class="text-gray-600 text-sm capitalize">${item.category}</p>
+          <div class="flex justify-between items-center mt-2">
+            <span class="text-green-600 font-bold">Rs ${item.price}</span>
+            <button class="bg-blue-600 text-white px-3 py-1 rounded text-sm add-btn">Add</button>
+          </div>`;
+        menuContainer.appendChild(card);
+      });
+    }
+
+    // CATEGORY FILTER
     const buttons = document.querySelectorAll('.category-btn');
     const items = document.querySelectorAll('#menu > div');
     const search = document.getElementById('search');
 
-    // CATEGORY FILTER
     buttons.forEach(button => {
       button.addEventListener('click', () => {
         const cat = button.getAttribute('data-category');
         buttons.forEach(b => b.classList.remove('bg-blue-600','text-white'));
         button.classList.add('bg-blue-600','text-white');
-        items.forEach(item => {
-          const match = cat === 'all' || item.getAttribute('data-category') === cat;
-          item.style.display = match ? 'block' : 'none';
+        const cards = document.querySelectorAll('#menu > div');
+        cards.forEach(card => {
+          const match = cat === 'all' || card.getAttribute('data-category') === cat;
+          card.style.display = match ? 'block' : 'none';
         });
         search.value = '';
       });
@@ -124,15 +117,16 @@
     // SEARCH FUNCTION
     search.addEventListener('input', () => {
       const q = search.value.toLowerCase();
-      items.forEach(item => {
-        const name = item.querySelector('h2').innerText.toLowerCase();
-        item.style.display = name.includes(q) ? 'block' : 'none';
+      const cards = document.querySelectorAll('#menu > div');
+      cards.forEach(card => {
+        const name = card.querySelector('h2').innerText.toLowerCase();
+        card.style.display = name.includes(q) ? 'block' : 'none';
       });
     });
 
     // CART FUNCTIONALITY
     let cart = [];
-    let tableNumber = null; // <--- new table number
+    let tableNumber = null;
     const cartDrawer = document.getElementById('cartDrawer');
     const cartItems = document.getElementById('cartItems');
     const cartCount = document.getElementById('cartCount');
@@ -142,8 +136,7 @@
     function toggleCart() {
       const isHidden = cartDrawer.classList.contains('translate-y-full');
       cartDrawer.classList.toggle('translate-y-full', !isHidden);
-      if (isHidden) cartButton.style.bottom = '80vh';
-      else cartButton.style.bottom = '1.5rem';
+      cartButton.style.bottom = isHidden ? '80vh' : '1.5rem';
     }
 
     function updateCartUI() {
@@ -199,14 +192,12 @@
       toggleCart();
     }
 
-    document.querySelectorAll('.add-btn').forEach(btn=>{
-      btn.addEventListener('click', e=>{
-        e.stopPropagation();
-        const card = e.target.closest('[data-name]');
-        const name = card.dataset.name;
-        const price = card.dataset.price;
-        addToCart(name, price);
-      });
+    // Add button handler
+    document.addEventListener("click", (e) => {
+      if (e.target.classList.contains("add-btn")) {
+        const card = e.target.closest("[data-name]");
+        addToCart(card.dataset.name, card.dataset.price);
+      }
     });
   </script>
 </body>

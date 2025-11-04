@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Restaurant Sales Report</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50 min-h-screen p-6">
+
+  <!-- Back Button -->
+  <a href="{{ url_for('dashboard') }}" class="mb-6 text-blue-600 hover:underline text-lg font-medium inline-block">
+    ⬅️ Back to Dashboard
+  </a>
+
+  <div class="max-w-6xl mx-auto">
+
+    <!-- Report Header -->
+    <h1 class="text-4xl font-extrabold text-gray-800 mb-8 text-center">📊 Sales Overview</h1>
+
+    <!-- Income Summary Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+      <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
+        <p class="text-gray-500 uppercase text-sm">Income Today</p>
+        <p class="text-3xl font-bold text-green-600 mt-2">Rs. {{ daily_income }}</p>
+      </div>
+      <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
+        <p class="text-gray-500 uppercase text-sm">Income This Month</p>
+        <p class="text-3xl font-bold text-blue-600 mt-2">Rs. {{ monthly_income }}</p>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+      <div class="bg-white p-6 rounded-2xl shadow">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Daily Income</h2>
+        <canvas id="dailyChart"></canvas>
+      </div>
+      <div class="bg-white p-6 rounded-2xl shadow">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Monthly Sales</h2>
+        <canvas id="monthlyChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Detailed Bill Table -->
+    <div class="bg-white p-6 rounded-2xl shadow overflow-x-auto">
+      <h2 class="text-xl font-semibold text-gray-700 mb-4">Detailed Bills</h2>
+      <table class="min-w-full table-auto border-collapse">
+        <thead>
+          <tr class="bg-gray-200 uppercase text-gray-600 text-sm">
+            <th class="py-3 px-4 border">Table #</th>
+            <th class="py-3 px-4 border">Items Ordered</th>
+            <th class="py-3 px-4 border">Total (Rs.)</th>
+            <th class="py-3 px-4 border">Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for bill in reports %}
+          <tr class="border-b hover:bg-gray-50">
+            <td class="py-2 px-4 border">{{ bill.table_number }}</td>
+            <td class="py-2 px-4 border">
+              <ul class="list-disc ml-5">
+                {% for item in bill.items %}
+                <li>{{ item.name }} × {{ item.qty }}</li>
+                {% endfor %}
+              </ul>
+            </td>
+            <td class="py-2 px-4 border font-semibold">Rs. {{ bill.total }}</td>
+            <td class="py-2 px-4 border text-gray-500 text-sm">{{ bill.timestamp.strftime("%Y-%m-%d %H:%M") }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    // Prepare data for Daily Chart
+    const dailyLabels = [
+      {% for bill in reports %}
+        '{{ bill.timestamp.strftime("%Y-%m-%d") }}',
+      {% endfor %}
+    ];
+    const dailyData = [
+      {% for bill in reports %}
+        {{ bill.total }},
+      {% endfor %}
+    ];
+
+    const ctxDaily = document.getElementById('dailyChart').getContext('2d');
+    new Chart(ctxDaily, {
+      type: 'bar',
+      data: {
+        labels: dailyLabels,
+        datasets: [{
+          label: 'Daily Income (Rs.)',
+          data: dailyData,
+          backgroundColor: 'rgba(34,197,94,0.6)',
+          borderColor: 'rgba(34,197,94,1)',
+          borderWidth: 1
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    // Prepare Monthly Chart
+    const months = [];
+    const monthSums = [];
+    const monthMap = {};
+
+    {% for bill in reports %}
+      const m = {{ bill.timestamp.month }};
+      if (!monthMap[m]) monthMap[m] = 0;
+      monthMap[m] += {{ bill.total }};
+    {% endfor %}
+
+    for (const [month, sum] of Object.entries(monthMap)) {
+      months.push('Month ' + month);
+      monthSums.push(sum);
+    }
+
+    const ctxMonth = document.getElementById('monthlyChart').getContext('2d');
+    new Chart(ctxMonth, {
+      type: 'line',
+      data: {
+        labels: months,
+        datasets: [{
+          label: 'Monthly Income (Rs.)',
+          data: monthSums,
+          borderColor: 'rgba(59,130,246,1)',
+          backgroundColor: 'rgba(59,130,246,0.2)',
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+  </script>
+
+</body>
+</html>

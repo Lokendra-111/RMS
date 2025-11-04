@@ -21,7 +21,8 @@
 
     <section class="dashboard">
       <header>
-        <h1>Welcome {{ username }}</h1>
+        <h1 ALIGN="CENTER">RESTAURANT MANAGEMENT SYSTEM</H1>
+        <h2>Welcome {{ username }}</h1>
         <p style="color: black;"><b>Select an action below to begin.</b></p>
       </header>
 
@@ -29,9 +30,10 @@
         <div class="card" onclick='window.location.href="{{ url_for("view_menu") }}"'>📋<span>View Menu</span></div>
         <div class="card" onclick='window.location.href="{{ url_for("view_orders") }}"'>👀<span>View Orders</span></div>
         <div class="card" onclick='window.location.href="{{ url_for("generate_bill") }}"'>💵<span>Generate Bill</span></div>
-        <div class="card" onclick="alert('Manage Menu')">🍽️<span>Manage Menu</span></div>
+        <div class="card" onclick='window.location.href="{{ url_for("manage_menu") }}"'>🍴<span>Manage Menu</span></div>
         <div class="card" onclick='window.location.href="{{ url_for("table_status") }}"'>📶<span>Table Status</span></div>
-        <div class="card" onclick="alert('Reports')">📊<span>Reports</span></div>
+        <div class="card" onclick='window.location.href="{{ url_for("report") }}"'>📊<span>View Report</span></div>
+
       </div>
     </section>
   </div>
