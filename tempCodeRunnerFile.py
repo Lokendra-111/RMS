@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
-from models import db, bcrypt, User, Bill  # ✅ Added Bill model
+from models import db, bcrypt, User, Bill  #  Added Bill model
 from config import Config
 from datetime import datetime
 import json

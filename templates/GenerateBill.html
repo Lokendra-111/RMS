@@ -133,7 +133,7 @@
       currentTableNumber = tableNumber;
       renderBill(tableNumber);
 
-      // ✅ Send data to Flask backend to save in DB
+      //  Send data to Flask backend to save in DB
       fetch("/saveBill", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -3,20 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RMS Dashboard</title>
-  <link rel="stylesheet" href="waiter.css" />
+  <title>Waiter Dashboard | RMS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
- 
-  <div class="main-layout">
-    <section class="dashboard">
-      <div class="card-grid">
-        <div class="card" onclick="window.location.href='table.html'">🪑<span>Select Table</span></div>
-        <div class="card" onclick='window.location.href="viewMenu.html"'>📋<span>View Menu</span></div>
-        <div class="card" onclick='window.location.href="viewOrders.html"'>👀<span>View Orders</span></div>
-        <div class="card" onclick="window.location.href='tableStatus.html'">📶<span>Table Status</span></div>
+<body class="min-h-screen bg-gradient-to-br from-yellow-100 via-orange-200 to-red-100 font-sans flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-red-600 text-white shadow-lg py-4 px-6 flex justify-between items-center">
+    <h1 class="text-2xl font-bold">🍴 Restaurant Management System</h1>
+    <div class="flex items-center gap-4">
+      <span class="text-lg">👨‍🍳 Waiter Dashboard</span>
+      <a href="/logout" class="bg-white text-red-600 px-4 py-2 rounded-lg font-semibold hover:bg-gray-200 transition">
+        Logout
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow flex items-center justify-center p-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full max-w-6xl">
+
+      <!-- Select Table -->
+      <div onclick="window.location.href='tableStatus.html'"
+           class="cursor-pointer bg-white rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 p-6 text-center">
+        <div class="text-5xl mb-3">🪑</div>
+        <h2 class="text-xl font-semibold text-gray-800">Select Table</h2>
+        <p class="text-gray-500 mt-2 text-sm">Choose or manage customer tables</p>
       </div>
-    </section>
-  </div>
+
+      <!-- View Menu -->
+      <div onclick="window.location.href='viewMenu.html'"
+           class="cursor-pointer bg-white rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 p-6 text-center">
+        <div class="text-5xl mb-3">📋</div>
+        <h2 class="text-xl font-semibold text-gray-800">View Menu</h2>
+        <p class="text-gray-500 mt-2 text-sm">Check available dishes and prices</p>
+      </div>
+
+      <!-- View Orders -->
+      <div onclick="window.location.href='viewOrders.html'"
+           class="cursor-pointer bg-white rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 p-6 text-center">
+        <div class="text-5xl mb-3">👀</div>
+        <h2 class="text-xl font-semibold text-gray-800">View Orders</h2>
+        <p class="text-gray-500 mt-2 text-sm">Track and manage active orders</p>
+      </div>
+
+      <!-- Table Status -->
+      <div onclick="window.location.href='tableStatus.html'"
+           class="cursor-pointer bg-white rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 p-6 text-center">
+        <div class="text-5xl mb-3">📶</div>
+        <h2 class="text-xl font-semibold text-gray-800">Table Status</h2>
+        <p class="text-gray-500 mt-2 text-sm">Monitor which tables are occupied</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-red-600 text-white py-3 text-center text-sm">
+    © 2025 Restaurant Management System | Designed for Waiters 👨‍🍳
+  </footer>
+
 </body>
 </html>
