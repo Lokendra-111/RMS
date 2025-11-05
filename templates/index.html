@@ -9,25 +9,25 @@
 <body class="bg-gray-100 flex">
 
   <!-- Sidebar -->
-  <aside class="bg-red-600 text-white w-64 min-h-screen flex flex-col shadow-lg">
+  <aside class="bg-[#4B2E2E] text-white w-64 min-h-screen flex flex-col shadow-lg">
     <!-- Logo -->
-    <div class="flex items-center justify-center py-6 border-b border-red-500">
+    <div class="flex items-center justify-center py-6 border-b border-[#6B3E3E]">
       <img src="https://img.icons8.com/color/48/restaurant.png" alt="Logo" class="w-12 h-12 mr-2">
       <h1 class="text-2xl font-bold">RMS</h1>
     </div>
 
     <!-- Navigation -->
     <nav class="flex-1 flex flex-col mt-6 space-y-2 px-4">
-      <a href="{{ url_for('dashboard') }}" class="flex items-center gap-3 text-lg font-semibold p-3 rounded-lg hover:bg-red-700 transition">
+      <a href="{{ url_for('dashboard') }}" class="flex items-center gap-3 text-lg font-semibold p-3 rounded-lg hover:bg-[#6B3E3E] transition">
         🏠 <span>Home</span>
       </a>
-      <a href="{{ url_for('report') }}" class="flex items-center gap-3 text-lg font-semibold p-3 rounded-lg hover:bg-red-700 transition">
+      <a href="{{ url_for('report') }}" class="flex items-center gap-3 text-lg font-semibold p-3 rounded-lg hover:bg-[#6B3E3E] transition">
         📊 <span>Reports</span>
       </a>
-      <a href="{{ url_for('generate_account') }}" class="flex items-center gap-3 text-lg font-semibold p-3 rounded-lg hover:bg-red-700 transition">
+      <a href="{{ url_for('generate_account') }}" class="flex items-center gap-3 text-lg font-semibold p-3 rounded-lg hover:bg-[#6B3E3E] transition">
         👥 <span>Create Account</span>
       </a>
-      <a href="{{ url_for('logout') }}" class="flex items-center gap-3 text-lg font-semibold p-3 rounded-lg mt-auto mb-6 hover:bg-red-700 transition">
+      <a href="{{ url_for('logout') }}" class="flex items-center gap-3 text-lg font-semibold p-3 rounded-lg mt-auto mb-6 hover:bg-[#6B3E3E] transition">
         📕 <span>Logout</span>
       </a>
     </nav>
@@ -42,32 +42,32 @@
     </header>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      <div onclick='window.location.href="{{ url_for("view_menu") }}"' class="cursor-pointer bg-white shadow-lg rounded-xl p-8 text-center hover:shadow-2xl transition transform hover:-translate-y-2">
+      <div onclick='window.location.href="{{ url_for("view_menu") }}"' class="cursor-pointer bg-[#FFF8F0] shadow-lg rounded-xl p-8 text-center hover:shadow-2xl transition transform hover:-translate-y-2">
         <div class="text-6xl mb-3">📋</div>
         <h2 class="text-2xl font-bold text-gray-800">View Menu</h2>
       </div>
 
-      <div onclick='window.location.href="{{ url_for("view_orders") }}"' class="cursor-pointer bg-white shadow-lg rounded-xl p-8 text-center hover:shadow-2xl transition transform hover:-translate-y-2">
+      <div onclick='window.location.href="{{ url_for("view_orders") }}"' class="cursor-pointer bg-[#FFF8F0] shadow-lg rounded-xl p-8 text-center hover:shadow-2xl transition transform hover:-translate-y-2">
         <div class="text-6xl mb-3">👀</div>
         <h2 class="text-2xl font-bold text-gray-800">View Orders</h2>
       </div>
 
-      <div onclick='window.location.href="{{ url_for("generate_bill") }}"' class="cursor-pointer bg-white shadow-lg rounded-xl p-8 text-center hover:shadow-2xl transition transform hover:-translate-y-2">
+      <div onclick='window.location.href="{{ url_for("generate_bill") }}"' class="cursor-pointer bg-[#FFF8F0] shadow-lg rounded-xl p-8 text-center hover:shadow-2xl transition transform hover:-translate-y-2">
         <div class="text-6xl mb-3">💵</div>
         <h2 class="text-2xl font-bold text-gray-800">Generate Bill</h2>
       </div>
 
-      <div onclick='window.location.href="{{ url_for("manage_menu") }}"' class="cursor-pointer bg-white shadow-lg rounded-xl p-8 text-center hover:shadow-2xl transition transform hover:-translate-y-2">
+      <div onclick='window.location.href="{{ url_for("manage_menu") }}"' class="cursor-pointer bg-[#FFF8F0] shadow-lg rounded-xl p-8 text-center hover:shadow-2xl transition transform hover:-translate-y-2">
         <div class="text-6xl mb-3">🍴</div>
         <h2 class="text-2xl font-bold text-gray-800">Manage Menu</h2>
       </div>
 
-      <div onclick='window.location.href="{{ url_for("table_status") }}"' class="cursor-pointer bg-white shadow-lg rounded-xl p-8 text-center hover:shadow-2xl transition transform hover:-translate-y-2">
+      <div onclick='window.location.href="{{ url_for("table_status") }}"' class="cursor-pointer bg-[#FFF8F0] shadow-lg rounded-xl p-8 text-center hover:shadow-2xl transition transform hover:-translate-y-2">
         <div class="text-6xl mb-3">📶</div>
         <h2 class="text-2xl font-bold text-gray-800">Table Status</h2>
       </div>
 
-      <div onclick='window.location.href="{{ url_for("report") }}"' class="cursor-pointer bg-white shadow-lg rounded-xl p-8 text-center hover:shadow-2xl transition transform hover:-translate-y-2">
+      <div onclick='window.location.href="{{ url_for("report") }}"' class="cursor-pointer bg-[#FFF8F0] shadow-lg rounded-xl p-8 text-center hover:shadow-2xl transition transform hover:-translate-y-2">
         <div class="text-6xl mb-3">📊</div>
         <h2 class="text-2xl font-bold text-gray-800">View Report</h2>
       </div>
@@ -75,7 +75,7 @@
   </section>
 
   <!-- Footer -->
-  <footer class="bg-red-600 text-white py-3 text-center text-sm fixed bottom-0 left-0 w-full">
+  <footer class="bg-[#4B2E2E] text-white py-3 text-center text-sm fixed bottom-0 left-0 w-full">
     © 2025 Restaurant Management System | Admin Dashboard 👩‍💼👨‍💼
   </footer>
 
